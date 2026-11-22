@@ -1,26 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../screens/seats_page.dart';
-import 'package:flutter/material.dart';
+import '../models/movie_model.dart';
 import '../screens/seats_page.dart';
 
 class MovieItem extends StatelessWidget {
-  final int movieId;
-  final String name;
-  final String poster;
-  final String showDate;
-  final String showTime;
-  final List seats;
+  final MovieModel movie;
 
-  const MovieItem({
-    super.key,
-    required this.movieId,
-    required this.name,
-    required this.poster,
-    required this.showDate,
-    required this.showTime,
-    required this.seats,
-  });
+  const MovieItem({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +14,7 @@ class MovieItem extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => MovieSeatsPage(
-              movieId: movieId,
-              name: name,
-              poster: poster,
-              showDate: showDate,
-              showTime: showTime,
-            ),
-          ),
+          MaterialPageRoute(builder: (_) => MovieSeatsPage(movie: movie)),
         );
       },
       child: Card(
@@ -46,7 +24,7 @@ class MovieItem extends StatelessWidget {
           child: Row(
             children: [
               Image.network(
-                poster,
+                movie.poster,
                 width: 100,
                 height: 140,
                 fit: BoxFit.cover,
@@ -56,7 +34,7 @@ class MovieItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    movie.name,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -67,7 +45,7 @@ class MovieItem extends StatelessWidget {
                     children: [
                       const Icon(Icons.event),
                       const SizedBox(width: 5),
-                      Text(showDate),
+                      Text(movie.showDate),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -75,7 +53,7 @@ class MovieItem extends StatelessWidget {
                     children: [
                       const Icon(Icons.schedule),
                       const SizedBox(width: 5),
-                      Text(showTime),
+                      Text(movie.showTime),
                     ],
                   ),
                 ],

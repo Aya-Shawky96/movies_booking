@@ -1,18 +1,22 @@
 import 'package:dio/dio.dart';
-import '../models/movie_model.dart';
+import 'package:movies_booking/models/movie_model.dart';
 
 class MovieServices {
-
   static Dio dio = Dio();
 
   static Future<MoviesModel> getMovies() async {
+    try {
+      final Response response = await dio.get(
+        "https://apimovie.runasp.net/api/Movies",
+      );
 
-    Response response = await dio.get(
-      "https://apimovie.runasp.net/api/Movies",
-    );
-
-    print(response.data);
-
-    return MoviesModel.fromJson(response.data);
+      return MoviesModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (dioError) {
+      throw Exception(dioError.message);
+    } catch (error) {
+      throw Exception("Other error: ${error.toString()}");
+    }
   }
 }

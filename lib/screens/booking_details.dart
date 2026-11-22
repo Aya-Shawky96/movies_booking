@@ -31,7 +31,10 @@ class BookingDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var providerObject = Provider.of<BookingProvider>(context, listen: false);
-    var providerMovieObject = Provider.of<MovieProvider>(context, listen: false);
+    var providerMovieObject = Provider.of<MovieProvider>(
+      context,
+      listen: false,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -137,13 +140,12 @@ class BookingDetailsPage extends StatelessWidget {
 
             Consumer<MovieProvider>(
               builder: (context, movieProvider, child) {
-
                 final movie = movieProvider.movieModel!.movies.firstWhere(
-                      (movie) => movie["id"] == movieId,
+                  (movie) => movie.id == movieId,
                 );
 
-                final seat = movie["seats"].firstWhere(
-                      (seat) => seat["seatId"] == seatId,
+                final seat = movie.seats.firstWhere(
+                  (seat) => seat["seatId"] == seatId,
                 );
 
                 controller.text = seat["customerName"] ?? "";
@@ -174,7 +176,6 @@ class BookingDetailsPage extends StatelessWidget {
 
               child: OutlinedButton.icon(
                 onPressed: () async {
-
                   await providerObject.deleteBookingProvider(bookingId);
 
                   await providerMovieObject.getMoviesProvider();
@@ -201,7 +202,6 @@ class BookingDetailsPage extends StatelessWidget {
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                 onPressed: () async {
-
                   await providerObject.updateBookingProvider(
                     bookingId: bookingId,
                     customerName: controller.text,
