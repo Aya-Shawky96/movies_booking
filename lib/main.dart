@@ -14,21 +14,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MultiProvider(
-      providers:
-      [
-        ChangeNotifierProvider(create: (context) => RegistrationProvider(),),
-        ChangeNotifierProvider(create: (context) => MovieProvider(),),
-        ChangeNotifierProvider(create: (context) => BookingProvider(),),
-
-
-
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => RegistrationProvider()),
+        ChangeNotifierProvider(create: (context) => MovieProvider()),
+        ChangeNotifierProvider(create: (context) => BookingProvider()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomePage(),
-      ),
-
+      child: MaterialApp(debugShowCheckedModeBanner: false, home: HomePage()),
     );
   }
 }
