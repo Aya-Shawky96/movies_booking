@@ -14,7 +14,7 @@ class MovieServices {
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (dioError) {
-      throw Exception(dioError.message);
+      throw Exception("Dio Error: ${dioError.message}");
     } catch (error) {
       throw Exception("Other error: ${error.toString()}");
     }

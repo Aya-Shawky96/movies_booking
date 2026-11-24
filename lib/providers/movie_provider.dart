@@ -6,8 +6,6 @@ class MovieProvider extends ChangeNotifier {
   MoviesModel? movieModel;
 
   Future<void> getMoviesProvider() async {
-    print("Loading Movies");
-
     movieModel = await MovieServices.getMovies();
 
     notifyListeners();

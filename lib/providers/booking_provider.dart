@@ -7,13 +7,11 @@ class BookingProvider extends ChangeNotifier {
     required int seatId,
     required String customerName,
   }) async {
-    var response = await BookingServices.createBooking(
+    await BookingServices.createBooking(
       movieId: movieId,
       seatId: seatId,
       customerName: customerName,
     );
-
-    print(response.data);
 
     notifyListeners();
   }
@@ -22,20 +20,16 @@ class BookingProvider extends ChangeNotifier {
     required int bookingId,
     required String customerName,
   }) async {
-    var response = await BookingServices.updateBooking(
+    await BookingServices.updateBooking(
       bookingId: bookingId,
       customerName: customerName,
     );
-
-    print(response.data);
 
     notifyListeners();
   }
 
   Future<void> deleteBookingProvider(int bookingId) async {
-    var response = await BookingServices.deleteBooking(bookingId);
-
-    print(response.data);
+    await BookingServices.deleteBooking(bookingId);
 
     notifyListeners();
   }
