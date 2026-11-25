@@ -8,10 +8,10 @@ import '../providers/movie_provider.dart';
 class BookingDetailsPage extends StatelessWidget {
   final MovieModel movie;
   final Seat seat;
+  final TextEditingController controller;
 
-  BookingDetailsPage({super.key, required this.movie, required this.seat});
-
-  final TextEditingController controller = TextEditingController();
+  BookingDetailsPage({super.key, required this.movie, required this.seat})
+    : controller = TextEditingController(text: seat.customerName ?? '');
 
   @override
   Widget build(BuildContext context) {
@@ -105,28 +105,15 @@ class BookingDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            Consumer<MovieProvider>(
-              builder: (context, movieProvider, child) {
-                final currentMovie = movieProvider.movieModel!.movies
-                    .firstWhere((currentMovie) => currentMovie.id == movie.id);
-
-                final seat = currentMovie.seats.firstWhere(
-                  (currentSeat) => currentSeat.seatId == this.seat.seatId,
-                );
-
-                controller.text = seat.customerName ?? '';
-
-                return TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    labelText: "Customer Name",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: const Icon(Icons.person),
-                  ),
-                );
-              },
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: "Customer Name",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                prefixIcon: const Icon(Icons.person),
+              ),
             ),
             SizedBox(height: 20),
 
