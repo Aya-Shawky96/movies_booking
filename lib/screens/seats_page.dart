@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/movie_model.dart';
 import '../providers/movie_provider.dart';
+import '../widgets/seat_item.dart';
 import 'booking.dart';
 import 'booking_details.dart';
 
@@ -12,7 +13,6 @@ class MovieSeatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var providerObject = Provider.of<MovieProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -23,7 +23,8 @@ class MovieSeatsPage extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFF123B63),
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -63,7 +64,7 @@ class MovieSeatsPage extends StatelessWidget {
                             children: [
                               const Icon(
                                 Icons.calendar_month,
-                                color: Colors.pinkAccent,
+                                color: Color(0xFFB7791F),
                               ),
                               const SizedBox(width: 8),
                               Text(
@@ -77,7 +78,7 @@ class MovieSeatsPage extends StatelessWidget {
                             children: [
                               const Icon(
                                 Icons.access_time,
-                                color: Colors.pinkAccent,
+                                color: Color(0xFFB7791F),
                               ),
                               const SizedBox(width: 8),
                               Text(
@@ -108,7 +109,7 @@ class MovieSeatsPage extends StatelessWidget {
                 final moviesModel = movieProvider.movieModel;
 
                 if (moviesModel == null) {
-                  providerObject.getMoviesProvider();
+                  movieProvider.getMoviesProvider();
 
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -130,21 +131,16 @@ class MovieSeatsPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final seat = seats[index];
 
-                      return GestureDetector(
+                      return SeatItem(
+                        seatNumber: seat.seatNumber,
+                        status: seat.status,
                         onTap: () {
-                          if (seat["status"] == "Available") {
+                          if (seat.status == "Available") {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => BookSeatPage(
-                                  movieId: movie.id,
-                                  seatId: seat["seatId"],
-                                  seatNumber: seat["seatNumber"],
-                                  poster: movie.poster,
-                                  name: movie.name,
-                                  showDate: movie.showDate,
-                                  showTime: movie.showTime,
-                                ),
+                                builder: (_) =>
+                                    BookSeatPage(movie: movie, seat: seat),
                               ),
                             );
                           } else {
@@ -152,36 +148,13 @@ class MovieSeatsPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => BookingDetailsPage(
-                                  bookingId: seat["bookingId"],
-                                  movieId: movie.id,
-                                  seatId: seat["seatId"],
-                                  seatNumber: seat["seatNumber"],
-                                  poster: movie.poster,
-                                  name: movie.name,
-                                  showDate: movie.showDate,
-                                  showTime: movie.showTime,
+                                  movie: movie,
+                                  seat: seat,
                                 ),
                               ),
                             );
                           }
                         },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: seat["status"] == "Available"
-                                ? Colors.amberAccent
-                                : Colors.red,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Center(
-                            child: Text(
-                              seat["seatNumber"],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
                       );
                     },
                   ),

@@ -1,35 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/movie_model.dart';
 import '../providers/movie_provider.dart';
 import '../providers/booking_provider.dart';
 
 class BookSeatPage extends StatelessWidget {
-  final int movieId;
-  final int seatId;
-  final String poster;
-  final String name;
-  final String showDate;
-  final String showTime;
-  final String seatNumber;
+  final MovieModel movie;
+  final Seat seat;
 
-  BookSeatPage({
-    super.key,
-    required this.movieId,
-    required this.seatId,
-    required this.poster,
-    required this.name,
-    required this.showDate,
-    required this.showTime,
-    required this.seatNumber,
-  });
+  BookSeatPage({super.key, required this.movie, required this.seat});
 
   final TextEditingController customerController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    var bookingProvider = Provider.of<BookingProvider>(context, listen: false);
+    var bookingProvider = context.read<BookingProvider>();
 
-    var movieProvider = Provider.of<MovieProvider>(context, listen: false);
+    var movieProvider = context.read<MovieProvider>();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -37,7 +24,8 @@ class BookSeatPage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFF123B63),
+        foregroundColor: Colors.white,
       ),
 
       body: Padding(
@@ -53,7 +41,7 @@ class BookSeatPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
 
                   child: Image.network(
-                    poster,
+                    movie.poster,
                     width: 120,
                     height: 160,
                     fit: BoxFit.cover,
@@ -68,7 +56,7 @@ class BookSeatPage extends StatelessWidget {
 
                     children: [
                       Text(
-                        name,
+                        movie.name,
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -81,7 +69,7 @@ class BookSeatPage extends StatelessWidget {
                         children: [
                           const Icon(Icons.calendar_month),
                           const SizedBox(width: 5),
-                          Text(showDate),
+                          Text(movie.showDate),
                         ],
                       ),
 
@@ -91,29 +79,15 @@ class BookSeatPage extends StatelessWidget {
                         children: [
                           const Icon(Icons.access_time),
                           const SizedBox(width: 5),
-                          Text(showTime),
+                          Text(movie.showTime),
                         ],
                       ),
 
                       const SizedBox(height: 15),
 
-                      RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 22,
-                          ),
-                          children: [
-                            const TextSpan(text: "Seat : "),
-                            TextSpan(
-                              text: seatNumber,
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Text(
+                        "Seat: ${seat.seatNumber}",
+                        style: const TextStyle(fontSize: 22),
                       ),
                     ],
                   ),
@@ -162,8 +136,8 @@ class BookSeatPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () async {
                       await bookingProvider.createBookingProvider(
-                        movieId: movieId,
-                        seatId: seatId,
+                        movieId: movie.id,
+                        seatId: seat.seatId,
                         customerName: customerController.text,
                       );
 

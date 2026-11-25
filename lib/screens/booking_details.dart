@@ -1,40 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/movie_model.dart';
 import '../providers/booking_provider.dart';
 import '../providers/movie_provider.dart';
 
 class BookingDetailsPage extends StatelessWidget {
-  final int bookingId;
-  final int movieId;
-  final int seatId;
-  final String poster;
-  final String name;
-  final String showDate;
-  final String showTime;
-  final String seatNumber;
+  final MovieModel movie;
+  final Seat seat;
 
-  BookingDetailsPage({
-    super.key,
-    required this.bookingId,
-    required this.movieId,
-    required this.seatId,
-    required this.poster,
-    required this.name,
-    required this.showDate,
-    required this.showTime,
-    required this.seatNumber,
-  });
+  BookingDetailsPage({super.key, required this.movie, required this.seat});
 
   final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    var providerObject = Provider.of<BookingProvider>(context, listen: false);
-    var providerMovieObject = Provider.of<MovieProvider>(
-      context,
-      listen: false,
-    );
+    var providerObject = context.read<BookingProvider>();
+    var providerMovieObject = context.read<MovieProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +25,8 @@ class BookingDetailsPage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFF123B63),
+        foregroundColor: Colors.white,
       ),
 
       body: Padding(
@@ -59,7 +42,7 @@ class BookingDetailsPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
 
                   child: Image.network(
-                    poster,
+                    movie.poster,
                     width: 120,
                     height: 160,
                     fit: BoxFit.cover,
@@ -74,7 +57,7 @@ class BookingDetailsPage extends StatelessWidget {
 
                     children: [
                       Text(
-                        name,
+                        movie.name,
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -87,7 +70,7 @@ class BookingDetailsPage extends StatelessWidget {
                         children: [
                           const Icon(Icons.calendar_month),
                           const SizedBox(width: 5),
-                          Text(showDate),
+                          Text(movie.showDate),
                         ],
                       ),
 
@@ -97,31 +80,15 @@ class BookingDetailsPage extends StatelessWidget {
                         children: [
                           const Icon(Icons.access_time),
                           const SizedBox(width: 5),
-                          Text(showTime),
+                          Text(movie.showTime),
                         ],
                       ),
 
                       const SizedBox(height: 15),
 
-                      RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 22,
-                          ),
-
-                          children: [
-                            const TextSpan(text: "Seat : "),
-
-                            TextSpan(
-                              text: seatNumber,
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Text(
+                        "Seat: ${seat.seatNumber}",
+                        style: const TextStyle(fontSize: 22),
                       ),
                     ],
                   ),
@@ -140,15 +107,14 @@ class BookingDetailsPage extends StatelessWidget {
 
             Consumer<MovieProvider>(
               builder: (context, movieProvider, child) {
-                final movie = movieProvider.movieModel!.movies.firstWhere(
-                  (movie) => movie.id == movieId,
+                final currentMovie = movieProvider.movieModel!.movies
+                    .firstWhere((currentMovie) => currentMovie.id == movie.id);
+
+                final seat = currentMovie.seats.firstWhere(
+                  (currentSeat) => currentSeat.seatId == this.seat.seatId,
                 );
 
-                final seat = movie.seats.firstWhere(
-                  (seat) => seat["seatId"] == seatId,
-                );
-
-                controller.text = seat["customerName"] ?? "";
+                controller.text = seat.customerName ?? '';
 
                 return TextField(
                   controller: controller,
@@ -176,7 +142,7 @@ class BookingDetailsPage extends StatelessWidget {
 
               child: OutlinedButton.icon(
                 onPressed: () async {
-                  await providerObject.deleteBookingProvider(bookingId);
+                  await providerObject.deleteBookingProvider(seat.bookingId!);
 
                   await providerMovieObject.getMoviesProvider();
 
@@ -200,10 +166,12 @@ class BookingDetailsPage extends StatelessWidget {
               width: double.infinity,
 
               child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF123B63),
+                ),
                 onPressed: () async {
                   await providerObject.updateBookingProvider(
-                    bookingId: bookingId,
+                    bookingId: seat.bookingId!,
                     customerName: controller.text,
                   );
 

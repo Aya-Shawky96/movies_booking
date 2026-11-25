@@ -1,10 +1,26 @@
+class Seat {
+  final int seatId;
+  final int? bookingId;
+  final String seatNumber;
+  final String status;
+  final String? customerName;
+
+  const Seat({
+    required this.seatId,
+    required this.seatNumber,
+    required this.status,
+    this.bookingId,
+    this.customerName,
+  });
+}
+
 class MovieModel {
   final int id;
   final String name;
   final String poster;
   final String showDate;
   final String showTime;
-  final List<dynamic> seats;
+  final List<Seat> seats;
 
   MovieModel({
     required this.id,
@@ -30,7 +46,17 @@ class MoviesModel {
             poster: movie['poster'],
             showDate: movie['showDate'],
             showTime: movie['showTime'],
-            seats: movie['seats'],
+            seats: movie["seats"]
+                .map<Seat>(
+                  (seat) => Seat(
+                    seatId: seat["seatId"],
+                    seatNumber: seat["seatNumber"],
+                    status: seat["status"],
+                    bookingId: seat["bookingId"],
+                    customerName: seat["customerName"],
+                  ),
+                )
+                .toList(),
           ),
         )
         .toList();

@@ -17,7 +17,8 @@ class HomePage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFF123B63),
+        foregroundColor: Colors.white,
       ),
 
       body: Consumer<MovieProvider>(
